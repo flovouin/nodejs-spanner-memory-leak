@@ -1,6 +1,5 @@
 TOPIC_NAME="memory-leak-trigger"
 TOPIC_ID="projects/${GCP_PROJECT_ID}/topics/${TOPIC_NAME}"
-GS_BUCKET="mem-leak-$(openssl rand -hex 3)"
 SERVICE_ACCOUNT_ID="memory-leak"
 SERVICE_ACCOUNT="${SERVICE_ACCOUNT_ID}@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 PUBLISHING_RATE=10
@@ -15,10 +14,6 @@ echo "GCP region: ${GCP_REGION}"
 # Create the Pub/Sub topic.
 echo "Creating topic ${TOPIC_NAME}..."
 gcloud pubsub topics create --project ${GCP_PROJECT_ID} ${TOPIC_NAME}
-
-# Create the Storage bucket (used by Dataflow).
-echo "Creating bucket ${GS_BUCKET}..."
-gsutil mb -p ${GCP_PROJECT_ID} -l ${GCP_REGION} gs://${GS_BUCKET}
 
 # Create a service account used by both Dataflow and Cloud Functions.
 echo "Creating service account ${SERVICE_ACCOUNT_ID}..."
@@ -55,7 +50,11 @@ echo "Deploying the Dataflow job..."
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cd ${REPO_ROOT}/publisher
 
-DATAFLOW_ARGS="--streaming --runner=DataflowRunner --serviceAccount=${SERVICE_ACCOUNT} --project=${GCP_PROJECT_ID} --qps=${PUBLISHING_RATE} --topic=${TOPIC_ID} --region=${GCP_REGION} --tempLocation=gs://${GS_BUCKET}/temp/"
+DATAFLOW_ARGS="--streaming"
+DATAFLOW_ARGS="${DATAFLOW_ARGS} --project=${GCP_PROJECT_ID}"
+DATAFLOW_ARGS="${DATAFLOW_ARGS} --qps=${PUBLISHING_RATE}"
+DATAFLOW_ARGS="${DATAFLOW_ARGS} --topic=${TOPIC_ID}"
+DATAFLOW_ARGS="${DATAFLOW_ARGS} --region=${GCP_REGION}"
 gradle run -DmainClass=com.epoca.Generator -Pargs="${DATAFLOW_ARGS}"
 
 cd -
