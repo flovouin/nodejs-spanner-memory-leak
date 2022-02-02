@@ -1,0 +1,23 @@
+{
+    "name": "memory-leak-spanner",
+    "version": "0.1.0",
+    "description": "Cloud Function to test the Spanner client.",
+    "author": "flovouin",
+    "main": "dist/main.js",
+    "types": "dist/main.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json"
+    },
+    "dependencies": {
+        "@google-cloud/spanner": "5.16.3"
+    },
+    "devDependencies": {
+        "@google-cloud/functions-framework": "1.10.0",
+        "typescript": "4.5.5"
+    }
+}

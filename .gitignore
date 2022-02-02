@@ -1,2 +1,4 @@
+functions/dist/
+functions/node_modules/
 publisher/.gradle/
 publisher/build/
