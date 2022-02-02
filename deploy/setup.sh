@@ -15,7 +15,7 @@ echo "GCP region: ${GCP_REGION}"
 echo "Creating topic ${TOPIC_NAME}..."
 gcloud pubsub topics create --project ${GCP_PROJECT_ID} ${TOPIC_NAME}
 
-# Create a service account used by both Dataflow and Cloud Functions.
+# Create a service account used by the Cloud Functions.
 echo "Creating service account ${SERVICE_ACCOUNT_ID}..."
 gcloud iam service-accounts create ${SERVICE_ACCOUNT_ID} \
     --project ${GCP_PROJECT_ID} \
@@ -23,15 +23,6 @@ gcloud iam service-accounts create ${SERVICE_ACCOUNT_ID} \
 gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
     --member "serviceAccount:${SERVICE_ACCOUNT}" \
     --role "roles/spanner.databaseUser"
-gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
-    --member "serviceAccount:${SERVICE_ACCOUNT}" \
-    --role "roles/dataflow.worker"
-gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
-    --member "serviceAccount:${SERVICE_ACCOUNT}" \
-    --role "roles/pubsub.publisher"
-gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
-    --member "serviceAccount:${SERVICE_ACCOUNT}" \
-    --role "roles/storage.objectAdmin"
 
 # Set up Spanner.
 echo "Creating Spanner instance ${SPANNER_INSTANCE} and database ${SPANNER_DATABASE}..."
