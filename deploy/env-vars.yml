@@ -1,0 +1,2 @@
+SPANNER_INSTANCE: memory-leak
+SPANNER_DATABASE: memory-leak
